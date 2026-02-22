@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Stack App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo" onclick="showView('landing')">Full-Stack App(Jenelyn Abilong)</div>
+    <div class="auth-controls">
+        <div id="guest-nav" class="nav-links">
+            <a href="#" onclick="showView('login'); return false;">Login</a>
+            <a href="#" onclick="showView('register'); return false;">Register</a>
+        </div>
+        <div id="user-nav" class="nav-user" style="display: none;">
+            <div class="dropdown">
+                <button class="dropbtn">Admin ▾</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="showView('profile'); return false;">Profile</a>
+                    <a href="#" onclick="showView('employees'); return false;">Employees</a>
+                    <a href="#" onclick="showView('accounts'); return false;">Accounts</a>
+                    <a href="#" onclick="showView('departments'); return false;">Departments</a>
+                    <a href="#" onclick="showView('requests'); return false;">My Requests</a>
+                    <hr>
+                    <a href="#" onclick="handleLogout(); return false;" class="logout-link">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <section id="view-landing" class="view active">
+        <h1>Welcome to Full-Stack App</h1>
+        <p>A static prototype before backend integration. Simulates:</p>
+        <ul class="feature-list">
+            <li>Email registration + fake verification</li>
+            <li>Login with JWT-like token simulation</li>
+            <li>Role-based UI (Admin/User)</li>
+            <li>CRUD for Employees, Departments, Requests</li>
+        </ul>
+        <div class="note-box">
+            ⚠️ <b>Note:</b> All data is stored in <span class="code-pink">localStorage</span>. Refresh to reset.
+        </div>
+        <button class="btn-blue-rect" onclick="showView('register')">Get Started →</button>
+    </section>
+
+    <section id="view-login" class="view">
+        <div class="auth-container">
+            <h2>Login</h2>
+            <div class="form-group"><label>Email</label><input type="email" id="login-email"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="login-pass"></div>
+            <div class="btn-row-left">
+                <button class="btn-blue-sm" onclick="handleLogin()">Login</button>
+                <button class="btn-white-sm" onclick="showView('landing')">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-register" class="view">
+        <div class="auth-container">
+            <h2>Register Account</h2>
+            <div class="form-group"><label>First Name</label><input type="text" id="reg-fname"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="reg-lname"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="reg-email"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="reg-pass"></div>
+            <div class="btn-row-left">
+                <button class="btn-green-sm" onclick="handleRegister()">Sign Up</button>
+                <button class="btn-white-sm" onclick="showView('landing')">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-verify-email" class="view">
+        <div class="auth-container">
+            <h2>Verify Your Email</h2>
+            <div class="alert-green">✅ A verification link has been sent to <b id="display-reg-email"></b>.</div>
+            <p style="margin-top:20px; font-size: 0.9rem;">For demo purposes, click below to simulate verification:</p>
+            <div class="btn-row-left">
+                <button class="btn-green-sm" onclick="simulateVerify()">✅ Simulate Email Verification</button>
+                <button class="btn-white-sm" onclick="showView('login')">Go to Login</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-employees" class="view">
+        <div class="header-flex">
+            <h2>Employees</h2>
+            <button class="btn-green-sm" onclick="toggleForm('employee-form')">+ Add Employee</button>
+        </div>
+        <table class="data-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Dept</th><th>Actions</th></tr></thead>
+            <tbody><tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">No employees.</td></tr></tbody>
+        </table>
+        <div id="employee-form" class="admin-card" style="display:none;">
+            <div class="card-header">Add/Edit Employee</div>
+            <div class="card-body">
+                <div class="form-group"><label>Employee ID</label><input type="text"></div>
+                <div class="form-group"><label>User Email</label><input type="email"></div>
+                <div class="form-group"><label>Position</label><input type="text"></div>
+                <div class="form-group"><label>Department</label><select><option>Engineering</option></select></div>
+                <div class="btn-row-left">
+                    <button class="btn-blue-sm" onclick="toggleForm('employee-form')">Save</button>
+                    <button class="btn-gray-sm" onclick="toggleForm('employee-form')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-departments" class="view">
+        <div class="header-flex">
+            <h2>Departments</h2>
+            <button class="btn-green-sm" onclick="toggleForm('dept-form')">+ Add Department</button>
+        </div>
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Description</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr><td>Engineering</td><td>Software and Hardware Development</td><td><button class="btn-edit">Edit</button> <button class="btn-delete">Delete</button></td></tr>
+                <tr><td>HR</td><td>Human Resources and Recruitment</td><td><button class="btn-edit">Edit</button> <button class="btn-delete">Delete</button></td></tr>
+            </tbody>
+        </table>
+        <div id="dept-form" class="admin-card" style="display:none;">
+            <div class="card-header">Add/Edit Department</div>
+            <div class="card-body">
+                <div class="form-group"><label>Department Name</label><input type="text"></div>
+                <div class="form-group"><label>Description</label><input type="text"></div>
+                <div class="btn-row-left">
+                    <button class="btn-blue-sm" onclick="toggleForm('dept-form')">Save</button>
+                    <button class="btn-gray-sm" onclick="toggleForm('dept-form')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-accounts" class="view">
+        <div class="header-flex">
+            <h2>Accounts</h2>
+            <button class="btn-green-sm" onclick="toggleForm('account-form')">+ Add Account</button>
+        </div>
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Actions</th></tr></thead>
+            <tbody><tr><td>Admin User</td><td>admin@example.com</td><td>Admin</td><td>✅</td><td><button class="btn-edit">Edit</button></td></tr></tbody>
+        </table>
+        <div id="account-form" class="admin-card" style="display:none;">
+            <div class="card-header">Add/Edit Account</div>
+            <div class="card-body">
+                <div class="form-group"><label>First Name</label><input type="text"></div>
+                <div class="form-group"><label>Last Name</label><input type="text"></div>
+                <div class="form-group"><label>Email</label><input type="email"></div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select><option>User</option><option>Admin</option></select>
+                </div>
+                <div class="btn-row-left">
+                    <button class="btn-blue-sm" onclick="toggleForm('account-form')">Save</button>
+                    <button class="btn-gray-sm" onclick="toggleForm('account-form')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-requests" class="view">
+        <div class="header-flex">
+            <h2>My Requests</h2>
+            <button class="btn-green-sm" onclick="openModal()">+ New Request</button>
+        </div>
+        <p style="color:#666;">You have no requests yet.</p>
+        <button class="btn-green-sm" onclick="openModal()">Create One</button>
+    </section>
+
+    <section id="view-profile" class="view">
+        <h2>My Profile</h2>
+        <div class="profile-card">
+            <h3>Admin User</h3>
+            <p><b>Email:</b> admin@example.com</p>
+            <button class="btn-outline-blue">Edit Profile</button>
+        </div>
+    </section>
+</div>
+
+<div id="request-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>New Request</span>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label>Type</label><select><option>Equipment</option></select></div>
+            <label>Items</label>
+            <div id="modal-items">
+                <div class="item-row">
+                    <input type="text" placeholder="Item name">
+                    <input type="number" value="1" style="width: 60px;">
+                    <button class="btn-plus" onclick="addRequestRow()">+</button>
+                </div>
+            </div>
+            <button class="btn-blue-full" onclick="closeModal()">Submit Request</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
