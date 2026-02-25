@@ -56,6 +56,43 @@ function handleLogin(e) {
 
 function logout() { location.href = '#/'; location.reload(); }
 
+// --- Profile Edit Functions ---
+function toggleProfileEdit(isEditing) {
+    const display = document.getElementById('profile-display');
+    const form = document.getElementById('profile-edit-form');
+    if (isEditing) {
+        display.classList.add('d-none');
+        form.classList.remove('d-none');
+        document.getElementById('edit-fname').value = currentUser.fname;
+        document.getElementById('edit-lname').value = currentUser.lname;
+    } else {
+        display.classList.remove('d-none');
+        form.classList.add('d-none');
+    }
+}
+
+function updateProfile(e) {
+    e.preventDefault();
+    const newFname = document.getElementById('edit-fname').value;
+    const newLname = document.getElementById('edit-lname').value;
+    
+    currentUser.fname = newFname;
+    currentUser.lname = newLname;
+    
+    const accIndex = window.db.accounts.findIndex(a => a.email === currentUser.email);
+    if (accIndex !== -1) {
+        window.db.accounts[accIndex].fname = newFname;
+        window.db.accounts[accIndex].lname = newLname;
+        saveDB();
+    }
+    
+    document.getElementById('userDrop').innerText = newFname;
+    document.getElementById('p-name').innerText = newFname + " " + newLname;
+    alert("Profile updated!");
+    toggleProfileEdit(false);
+}
+// ------------------------------
+
 function addRequestRow() {
     const container = document.getElementById('item-rows');
     const div = document.createElement('div');
@@ -179,6 +216,7 @@ window.onhashchange = () => {
             document.getElementById('p-name').innerText = currentUser.fname + " " + currentUser.lname;
             document.getElementById('p-email').innerText = currentUser.email;
             document.getElementById('p-role').innerText = currentUser.role;
+            toggleProfileEdit(false); // Sigurohon nga display mode ang una makita
         }
     }
 };
